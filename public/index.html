@@ -1,0 +1,42 @@
+<!DOCTYPE>
+<html ng-app="myApp">
+
+	<head>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+		
+		<title>Achievement Completion</title>
+	</head>
+	
+	<body>
+		<div class="container" ng-controller="AppCtrl">
+			<h1>Achievement Completion<h1>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Completed</th>
+						<th>Total</th>
+						<th>Percentage Completed</th>
+					
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="achievement in achievementInfo track by $index">
+						<td ng-if="!achievement.done" ng-bind="getName(achievement.id)"></td>
+						<td ng-if="!achievement.done" ng-bind="achievement.current"></td>
+						<td ng-if="!achievement.done" ng-bind="achievement.max"></td>
+						<td ng-if="!achievement.done" ng-bind="getPercentage(achievement)"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+		<script src="controllers/controller.js"></script>
+	</body>
+
+</html>
