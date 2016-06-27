@@ -13,26 +13,42 @@
 	
 	<body>
 		<div class="container" ng-controller="AppCtrl">
-			<h1>Achievement Completion<h1>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Completed</th>
-						<th>Total</th>
-						<th>Percentage Completed</th>
-					
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="achievement in achievementInfo track by $index">
-						<td ng-if="!achievement.done" ng-bind="getName(achievement.id)"></td>
-						<td ng-if="!achievement.done" ng-bind="achievement.current"></td>
-						<td ng-if="!achievement.done" ng-bind="achievement.max"></td>
-						<td ng-if="!achievement.done" ng-bind="getPercentage(achievement)"></td>
-					</tr>
-				</tbody>
-			</table>
+			<h1>Authentication</h1>
+			<p></p>
+			<span style="float:left; width:90%; padding-right:10px">
+				<input type="text" class="form-control" id="#auth" placeholder="Enter token" ng-model="accessToken">
+			</span>
+			<div><button type="button" class="btn btn-primary" ng-click="authenticate(accessToken)">Authenticate</button></div>
+			
+		
+			<br/>
+
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3>Achievement Completion</h3></div>
+				<div class="panel-body" style="height:65%; overflow:auto; ">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Completed</th>
+								<th>Total</th>
+								<th>Percentage Completed</th>
+							
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="achievement in achievementInfo track by $index">
+								<td ng-if="!achievement.done" ng-bind="getName(achievement.id)"></td>
+								<td ng-if="!achievement.done" ng-bind="achievement.current"></td>
+								<td ng-if="!achievement.done" ng-bind="achievement.max"></td>
+								<td ng-if="!achievement.done" ng-bind="getPercentage(achievement)"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			
 		</div>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>

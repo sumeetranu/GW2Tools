@@ -10,7 +10,18 @@ function Controller($scope, $http, $timeout) {
 	*/  
 	var accessToken = ""; 
 
-	
+	 /*$scope.$watch('accessToken', function() {
+        getInfo();
+        console.log('accesstoken:', accessToken);
+    });*/
+
+	$scope.authenticate = function(token) {
+		//accessToken = angular.element(document).find('#auth').val();
+		accessToken = token;
+		console.log('Authenticated using:', accessToken);
+		getInfo();
+	}
+
 	$scope.achievementInfo = [];
 
 	var getInfo = function(){
