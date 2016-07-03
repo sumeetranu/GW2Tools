@@ -41,6 +41,13 @@ body {
     background: url(/img/sayagata_bg.png) repeat 0 0;
 }
 
+.pageTitle {
+    font-family: 'Cinzel', Georgia, Times, serif;
+	color:#d9534f;
+	text-align:center;
+}
+
+
 /*.ng-table-pager {
     display: none;
 }*/
