@@ -1,22 +1,12 @@
 var myApp = angular.module('myApp', []);
 myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', Controller]);
 
+
 function Controller($scope, $http, $timeout) {  
 
-	/*
-		Enter access token here!
-		Note: This is a temporary fix, be careful sharing the file with the access token in it.
-			  Remove token before committing and files!
-	*/  
 	var accessToken = ""; 
 
-	 /*$scope.$watch('accessToken', function() {
-        getInfo();
-        console.log('accesstoken:', accessToken);
-    });*/
-
 	$scope.authenticate = function(token) {
-		//accessToken = angular.element(document).find('#auth').val();
 		accessToken = token;
 		console.log('Authenticated using:', accessToken);
 		getInfo();
@@ -41,24 +31,11 @@ function Controller($scope, $http, $timeout) {
 	
     getInfo();
 
-	/*var nameGetter = function(id){
-		var url2 = 'https://api.guildwars2.com/v2/achievements?id=' + id;
-		$http.get(url2).success(function(response) {
-			$scope.names[id] = response.name;
-		});
-	}
-
-	$scope.getNames = function() {
-		$scope.raw.forEach(function(arrayElement) {
-			nameGetter(arrayElement.id)
-		});
-	}*/
-
 	$scope.getPercentage = function(achievement) {
 		var percent=(achievement.current*1.0)/achievement.max*100;
 		var rounded = percent.toFixed(2)
 		//console.log('percent:', percent);
-		return rounded + '%';
+		return rounded;
 	}
 
 	$scope.getName = function(id) {

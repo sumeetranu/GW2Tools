@@ -1,58 +1,90 @@
 <!DOCTYPE>
 <html ng-app="myApp">
-
 	<head>
-		<!-- Latest compiled and minified CSS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+		<script src="controllers/controller.js"></script>
+		<link href="style.css" type="text/css" rel="stylesheet" />	
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
 		<!-- Optional theme -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-		
-		<title>Achievement Completion</title>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+		<script>
+			$(function () {
+				$('[data-toggle="popover"]').popover()
+			})
+
+			$(function () {
+				$('[data-toggle="tooltip"]').tooltip();
+			});
+
+			$(document).ready(function() {
+				$("#helpButton").popover({
+					style: 'width:100%',
+					placement: 'right',
+					html: 'true',
+					title : '<span class="text-info"><strong>API Key</strong></span>'+
+					'<button type="button" id="close" class="close" onclick="$(&quot;#helpButton&quot;).popover(&quot;hide&quot;);">&times;</button>',
+					content : '<p>An API key will allow Guild Wars 2 Tools access to your basic account info. This tool only requires access to your account and achievements.</p> <p>Create an API key from <a target="_blank" href="https://account.arena.net/applications">https://account.arena.net/applications</a> with atleast basic account permissions, and enter it below.</p> <p><i>Note: You have the ability to delete the API key from the arena net account page, when you are done.</i></p>'
+				});
+			});  
+
+		</script> 
+		<title>Guild Wars 2 Tools</title>
 	</head>
-	
+
+	<!-- public void do_stuff_plz() {var x = 69;} -->	
 	<body>
 		<div class="container" ng-controller="AppCtrl">
-			<h1>Authentication</h1>
-			<p></p>
-			<span style="float:left; width:90%; padding-right:10px">
-				<input type="text" class="form-control" id="#auth" placeholder="Enter token" ng-model="accessToken">
-			</span>
-			<div><button type="button" class="btn btn-primary" ng-click="authenticate(accessToken)">Authenticate</button></div>
-			
-		
 			<br/>
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3>Authentication</h3></div>
+				<div class="panel-body" style="height:10%">
+					<span style="float:left; padding-right:10px">
+						<p>Enter your API Key to link your Guild Wars 2 account</p>
+					</span>
+					<div>
+						<button id="helpButton" type="button" class="iconBtn"><i class="glyphicon glyphicon-question-sign redIcon"></i></button>
+					</div>
+
+					<table class="invisibleTable">
+						<tr>
+							<td class="alignLeft"><input type="text" class="form-control" id="#auth" placeholder="Enter GW2 API Key" ng-model="accessToken"></td>
+							<td class="alignRight fit"><button type="button" class="btn btn-primary" ng-click="authenticate(accessToken)">Authenticate</button></td>
+						</tr>
+					</table>
+				</div>
+			</div>
 
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3>Achievement Completion</h3></div>
-				<div class="panel-body" style="height:65%; overflow:auto; ">
+				<div class="panel-body" style="height:63%; overflow:auto; ">
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>ID</th>
-								<th>Completed</th>
-								<th>Total</th>
-								<th>Percentage Completed</th>
-							
+								<th>Name</th>
+								<th>Total Completion</th>
+								<th>Total Percentage</th>
+								<th>Closest Tier Completion</th>
+								<th>Tier Percentage</th>
+
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="achievement in achievementInfo track by $index">
 								<td ng-if="!achievement.done" ng-bind="getName(achievement.id)"></td>
-								<td ng-if="!achievement.done" ng-bind="achievement.current"></td>
-								<td ng-if="!achievement.done" ng-bind="achievement.max"></td>
-								<td ng-if="!achievement.done" ng-bind="getPercentage(achievement)"></td>
+								<td ng-if="!achievement.done">{{achievement.current}}/{{achievement.max}}</td>
+								<td ng-if="!achievement.done">{{getPercentage(achievement)}}%</td>
+								<td ng-if="!achievement.done">{{achievement.current}}/{{achievement.max}}</td>
+								<td ng-if="!achievement.done">{{getPercentage(achievement)}}%</td>
+
 							</tr>
 						</tbody>
 					</table>
 				</div>
-			</div>
-
-			
+			</div>	
 		</div>
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-		<script src="controllers/controller.js"></script>
 	</body>
-
 </html>

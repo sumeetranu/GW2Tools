@@ -1,0 +1,33 @@
+.redIcon  {
+	color:red;
+}
+
+.iconBtn {
+	padding:0;
+	border: none;
+	color: transparent;
+	background: transparent;
+}
+
+.invisibleTable {
+	border:none;
+	width:100%;
+}
+
+.fit {
+	width:1%;
+	white-space: nowrap;
+}
+
+.alignLeft {
+	text-align:left;
+}
+
+.alignRight {
+	text-align:right;
+	padding-left:10px;
+}
+
+.popover{
+	max-width:50% !important;
+}
