@@ -19,6 +19,10 @@ function Controller($scope, $http, $timeout, NgTableParams) {
     $scope.loginSuccess=true;
 
 	var getInfo = function(){
+		$scope.achievementInfo = [];
+    	$scope.basicInfo = {};
+    	$scope.tableParams = new NgTableParams({}, { dataset: $scope.achievementInfo});
+
 		// Basic account info
 		var accountUrl = 'https://api.guildwars2.com//v2/account?access_token=' + accessToken;
 		$http.get(accountUrl).success(function(response) {
