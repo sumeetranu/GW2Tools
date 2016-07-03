@@ -11,6 +11,14 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
+		<!-- ng-table -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.js"></script>
+
+
+		<!-- Google Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet"> 
+
 		<script>
 			$(function () {
 				$('[data-toggle="popover"]').popover()
@@ -40,8 +48,17 @@
 		<div class="container" ng-controller="AppCtrl">
 			<br/>
 			<div class="panel panel-default">
-				<div class="panel-heading"><h3>Authentication</h3></div>
-				<div class="panel-body" style="height:10%">
+				<div class="panel-heading">
+					<table class="invisibleTable">
+					<tr>
+						<td><h3>Authentication</h3></td>
+						<td class="alignRight">{{basicInfo.name}}</td>
+					</tr>
+					</table>
+
+					
+				</div>
+				<div class="panel-body">
 					<span style="float:left; padding-right:10px">
 						<p>Enter your API Key to link your Guild Wars 2 account</p>
 					</span>
@@ -55,48 +72,63 @@
 							<td class="alignRight fit"><button type="button" class="btn btn-primary" ng-click="authenticate(accessToken)">Authenticate</button></td>
 						</tr>
 					</table>
+					<br/>
+					<div class="alert alert-success" ng-if="basicInfo.name">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    					<p>Welcome <strong>{{basicInfo.name}}</strong>! Here are a few hints on using this tool: </p>
+    					<ol>
+	    					<li>
+	    						Use the Achievements table's title bar to sort achievements by total completion or tier completion.
+	    					</li>
+	    					<li>
+	    						Hover over the achievement names and completion bars to see additional info.
+	    					</li>
+	    					<li>
+	    						As of now, your account information will not be saved and will get reset when you close your browser or reload the page. However, you can save your API Key somewhere convenient, to make it easier to re-enter it.
+	    					</li>
+    					</ol>
+  					</div>
+
+  					<div class="alert alert-danger" ng-if="!loginSuccess">
+  						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  						Could not log in using that API Key!
+  					</div>
+
 				</div>
 			</div>
 
 			<div class="panel panel-default">
 				<div class="panel-heading"><h3>Achievement Completion</h3></div>
-				<div class="panel-body" style="height:63%; overflow:auto; ">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Total Completion</th>
-								<!-- <th>Total Percentage</th> -->
-								<th>Closest Tier Completion</th>
-								<!-- <th>Tier Percentage</th> -->
+				<div class="panel-body">
 
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="achievement in achievementInfo track by $index">
-								<td ng-if="!achievement.done" ng-bind="getName(achievement.id)"></td>
+					<table ng-table="tableParams" class="table" show-filter="true">
+						<tr ng-repeat="achievement in $data">
+							<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
+								<span data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.name}}">{{achievement.name}}</span>
+							</td>
+							<td title="'Total Completion'" sortable="'totalPercentage'">
+								<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
+									<div class="progress" style="width:100%">
+										<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{achievement.totalPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': achievement.totalPercentage + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.totalCompletion}}"></div>
+									</div>
+								</span>
+								<span style="float:right; width:55px;">{{achievement.totalPercentage}}%</span>
+							</td>
+							<td title="'Tier Completion'" sortable="'totalPercentage'">
+								<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
+									<div class="progress" style="width:100%">
+										<div class="progress-bar progress-bar-striped progress-bar-info" role="progress-bar" aria-valuenow="{{achievement.totalPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': achievement.totalPercentage + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.totalCompletion}}"></div>
+									</div>
+								</span>
+								<span style="float:right; width:55px;">{{achievement.totalPercentage}}%</span>
+							</td>
 
-								<td ng-if="!achievement.done">
-									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer"><div class="progress" style="width:100%">
-										<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{getPercentage(achievement)}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': getPercentage(achievement) + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.current}}/{{achievement.max}}">
-										</div>
-									</div></span>
-									<span style="float:right; width:55px;">{{getPercentage(achievement)}}%</span>
-					
-								</td>
-
-								<!-- <td ng-if="!achievement.done">{{achievement.current}}/{{achievement.max}}</td>
-								<td ng-if="!achievement.done">{{getPercentage(achievement)}}%</td> -->
-								<td ng-if="!achievement.done">
-									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer"><div class="progress" style="width:100%">
-										<div class="progress-bar progress-bar-striped progress-bar-info" role="progress-bar" aria-valuenow="{{getPercentage(achievement)}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': getPercentage(achievement) + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.current}}/{{achievement.max}}">
-										</div>
-									</div></span>
-									<span style="float:right; width:55px;">{{getPercentage(achievement)}}%</span>
-								</td>
-							</tr>
-						</tbody>
+    					</tr>
 					</table>
+
+				
+
+
 				</div>
 			</div>	
 		</div>

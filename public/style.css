@@ -31,3 +31,16 @@
 .popover{
 	max-width:50% !important;
 }
+
+
+h1, h2, h3, h4, h5, h6, p, div {
+    font-family: 'Cinzel', Georgia, Times, serif;
+}
+
+body { 
+    background: url(/img/sayagata_bg.png) repeat 0 0;
+}
+
+/*.ng-table-pager {
+    display: none;
+}*/

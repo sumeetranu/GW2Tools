@@ -1,8 +1,8 @@
-var myApp = angular.module('myApp', []);
-myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', Controller]);
+var myApp = angular.module('myApp', ['ngTable']);
+myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', Controller]);
 
 
-function Controller($scope, $http, $timeout) {  
+function Controller($scope, $http, $timeout, NgTableParams) {  
 
 	var accessToken = ""; 
 
@@ -12,33 +12,80 @@ function Controller($scope, $http, $timeout) {
 		getInfo();
 	}
 
-	$scope.achievementInfo = [];
+    $scope.achievementInfo = [];
+    $scope.basicInfo = {};
+    $scope.tableParams = new NgTableParams({}, { dataset: $scope.achievementInfo});
+
+    $scope.loginSuccess=true;
 
 	var getInfo = function(){
+		// Basic account info
+		var accountUrl = 'https://api.guildwars2.com//v2/account?access_token=' + accessToken;
+		$http.get(accountUrl).success(function(response) {
+			console.log('basic response was:', response);
+			$scope.basicInfo = response;
+			$scope.loginSuccess=true;
+		}).error(function(response) {
+			console.log('Failed login due to:', response);
+			$scope.loginSuccess=false;
+			$scope.basicInfo={};
+		});
+
 		// Account info and completion
-		var url = 'https://api.guildwars2.com//v2/account/achievements?access_token=' + accessToken;
-		$http.get(url).success(function(response) {
+		var achievementsUrl = 'https://api.guildwars2.com//v2/account/achievements?access_token=' + accessToken;
+		$http.get(achievementsUrl).success(function(response) {
 			console.log('I got the data I requested', response);
-			
+			$scope.loginSuccess=true;
 			$scope.achievementInfo = response.sort(function(a,b){
 				console.log('Sorting');
 				var valA = (a.current*100)/a.max;
 				var valB = (b.current*100)/b.max;
 				return valB-valA;
 			});	
+
+			console.log('Scope.achievementInfo is:', $scope.achievementInfo);
+
+			$scope.tableParams = new NgTableParams({}, { dataset: transform($scope.achievementInfo)});
+
+		}).error(function(response) {
+			console.log('Failed login due to:', response);
+			$scope.loginSuccess=false;
 		});	
 	}
 	
-    getInfo();
+   
 
-	$scope.getPercentage = function(achievement) {
+    function transform(data){
+    	ret = [];
+    	for(var i=0; i<data.length; i++){
+    		console.log(data[i].done);
+    		if(data[i].done==false){
+    			var curData = data[i];
+    			var curRet = {
+	    			name: $scope.getName(curData.id),
+	    			totalCompletion: curData.current + ' / ' + curData.max,
+	    			totalPercentage: getPercentage(curData),
+	    			tierCompletion: curData.current/curData.max,
+	    			tierPercentage: getPercentage(curData)
+    			};
+    			ret.push(curRet);
+    		}
+    	}
+    	console.log('RET:', ret);
+    	return ret;
+    }
+
+    $scope.getName = getName;
+    $scope.getPercentage = getPercentage;
+
+	function getPercentage(achievement) {
 		var percent=(achievement.current*1.0)/achievement.max*100;
 		var rounded = percent.toFixed(2)
 		//console.log('percent:', percent);
 		return rounded;
 	}
 
-	$scope.getName = function(id) {
+	function getName(id) {
 		return $scope.names[id];
 	}
 	
