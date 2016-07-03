@@ -16,9 +16,9 @@
 				$('[data-toggle="popover"]').popover()
 			})
 
-			$(function () {
-				$('[data-toggle="tooltip"]').tooltip();
-			});
+			$(document).ready(function() {
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+});
 
 			$(document).ready(function() {
 				$("#helpButton").popover({
@@ -66,20 +66,34 @@
 							<tr>
 								<th>Name</th>
 								<th>Total Completion</th>
-								<th>Total Percentage</th>
+								<!-- <th>Total Percentage</th> -->
 								<th>Closest Tier Completion</th>
-								<th>Tier Percentage</th>
+								<!-- <th>Tier Percentage</th> -->
 
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="achievement in achievementInfo track by $index">
 								<td ng-if="!achievement.done" ng-bind="getName(achievement.id)"></td>
-								<td ng-if="!achievement.done">{{achievement.current}}/{{achievement.max}}</td>
-								<td ng-if="!achievement.done">{{getPercentage(achievement)}}%</td>
-								<td ng-if="!achievement.done">{{achievement.current}}/{{achievement.max}}</td>
-								<td ng-if="!achievement.done">{{getPercentage(achievement)}}%</td>
 
+								<td ng-if="!achievement.done">
+									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer"><div class="progress" style="width:100%">
+										<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{getPercentage(achievement)}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': getPercentage(achievement) + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.current}}/{{achievement.max}}">
+										</div>
+									</div></span>
+									<span style="float:right; width:55px;">{{getPercentage(achievement)}}%</span>
+					
+								</td>
+
+								<!-- <td ng-if="!achievement.done">{{achievement.current}}/{{achievement.max}}</td>
+								<td ng-if="!achievement.done">{{getPercentage(achievement)}}%</td> -->
+								<td ng-if="!achievement.done">
+									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer"><div class="progress" style="width:100%">
+										<div class="progress-bar progress-bar-striped progress-bar-info" role="progress-bar" aria-valuenow="{{getPercentage(achievement)}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': getPercentage(achievement) + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.current}}/{{achievement.max}}">
+										</div>
+									</div></span>
+									<span style="float:right; width:55px;">{{getPercentage(achievement)}}%</span>
+								</td>
 							</tr>
 						</tbody>
 					</table>
