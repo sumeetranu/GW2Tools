@@ -17,7 +17,8 @@
 
 
 		<!-- Google Fonts -->
-		<link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet"> 
+		<link href="https://fonts.googleapis.com/css?family=Cinzel|New+Rocker" rel="stylesheet"> 
+
 
 		<script>
 			$(function () {
@@ -39,104 +40,130 @@
 				});
 			});  
 
+			/*API keys are a way to grant third-party tools and applications partial read-only access to your Guild Wars 2 account. To use them, create a key, then copy and paste it into the field provided by the third-party tool or application. Each key is granted a fixed set of permissions that limit what third-party tools can access, and you can delete a key at any time to revoke the permissions granted.
+*/
 		</script> 
 		<title>Guild Wars 2 Tools</title>
 	</head>
 
 	<!-- public void do_stuff_plz() {var x = 69;} -->	
-	<body>
-		<h1 class="pageTitle"><strong>Guild Wars 2 Tools</strong></h1>
-		<div class="container" ng-controller="AppCtrl">
-			<br/>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<table class="invisibleTable">
-					<tr>
-						<td><h3>Authentication</h3></td>
-						<td class="alignRight">{{basicInfo.name}}</td>
-					</tr>
-					</table>
+	<div id="container" ng-controller="AppCtrl">
+		<div id="header">
+			<h1 class="pageTitle">Guild Wars 2 Achievs</h1>
+		</div>
+
+		<!-- Navbar -->
+		<nav class="navbar navbar-default" style="align:center">
+			<div class="container">
+				<ul class="nav navbar-nav" style="width:100%">
+					<!-- <li class="active navbar-left"><a href="#">Home</a></li> -->
+					<li class="navbar-plain" ng-if="!basicInfo.name"><a></a></li>
+					<li class="navbar-left" ng-if="basicInfo.name"><a><div class="bootRed"><strong>{{basicInfo.name}}</strong></div></a></li>
+					<!-- <li ng-if="basicInfo.name" class="navbar-right">
+						<a>
+							<div >
+								<button class="iconBtn" ng-click="logout()"><i class="glyphicon glyphicon-log-out bootRed" ng-click=""></i> <span style="color:#d9534f">Logout</span></button>
+							</div>
+						</a>
+					</li> -->
+				</ul>
+			</div>
+			<div style="width:100%; background:#d9534f; height:10px"></div>
+		</nav>
+
+		<!-- Body -->
+		<div id="body">
+			<div class="container wrapper">
+
+				<!-- Landing/welcome page -->
+				<div ng-if="!basicInfo.name && !loginPage" class="flexbox-container">
+					<div>
+						<h1 class="bootRed">Welcome to GW2Achievs!</h1>
+						<p>Do you wish you had an easier way to search through all of your Guild Wars 2 achievements? This tool allows you to do that, and more! </P>
+						<p>Once you Login, you can see a list of all of your achievements, sorted by completion. You can search for achievements by name, and sort by total and tier completion.</p>
+						<p>More functionality will be added soon!</p>
+						<span style="padding-right:10px; width:10%; height:auto" class="logo-gw2"></span>
+						<img class="logo-gw2" src="../img/gw2_logo.png">
+
+					</div>
+					<div class="panel panel-default panel-custom centerOnPage" ng-if="!basicInfo.name">
+						<div class="panel-body">
+							<h2 style="text-align:center" class="bootRed">Login</h2>
+							<span style="float:left; padding-right:10px">
+								<p>Enter your API Key to link your Guild Wars 2 account</p>
+							</span>
+
+							<table class="invisibleTable">
+								<tr>
+									<td class="alignLeft"><input type="text" class="form-control" id="#auth" placeholder="Enter GW2 API Key" ng-model="accessToken"></td>
+									<td class="alignRight fit"><button type="button" class="btn redButton" ng-click="authenticate(accessToken)">Login</button></td>
+								</tr>
+							</table>
+							<br/>
+							<h5 class="bootRed">What is this?</h5>
+							<p>API keys are a way to grant third-party tools partial read-only access to your Guild Wars 2 account info. This tool only requires access to your <strong>account</strong> and <strong>progression</strong> (for achievements).</p> <p>Create an API key from the <a target="_blank" href="https://account.arena.net/applications">ArenaNet Application</a> with atleast basic account and progression permissions, and enter it below.</p> <p><i>Note: You have the ability to delete the API key from the arena net account page, when you are done, if you want to. If not, you will be able to use the same API key to login to this website, until you disable or delete it.</i></p>
+							<p>For more info on API keys, visit the <a target="_blank" href="https://wiki.guildwars2.com/wiki/API:API_key">GW2 API Keys Wiki Page</a>.</p>
+		  					<div class="alert alert-danger" ng-if="!loginSuccess">
+		  						Could not log in using that API Key. Please follow the instructions to generate an API Key (using the help button), and try again. Make sure that the generated API key gives access to <strong>account</strong> and <strong>progression</strong>.
+		  					</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Achievements Panel -->
+				<div class="panel panel-default panel-custom centerOnPage" ng-if="basicInfo.name">
+					<!-- <div class="panel-heading panel-heading-custom"><h3 class="heading-text">Achievement Completion</h3></div> -->
+					<div class="panel-body">
+						<h2 style="text-align:center" class="bootRed">Achievements</h2>
+
+
+						<!-- Not logged in yet -->
+						<div class="alert alert-warning" ng-if="!basicInfo.name">
+	  						Please enter an API Key to log in and view your achievement completion info.
+	  					</div>
+						<!-- No access to progress -->
+						<div class="alert alert-warning" ng-if="basicInfo.name && achievementInfo.length==0">
+	  						Please make sure your API Key has access to <strong>progress</strong> to view your achievement completion info.
+	  					</div>
+
+						<table ng-table="tableParams" class="table" show-filter="true" ng-show="achievementInfo.length>0">
+							<tr ng-repeat="achievement in $data">
+								<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
+									<span data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.name}}">{{achievement.name}}</span>
+								</td>
+								<td title="'Total Completion'" sortable="'totalPercentage'">
+									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
+										<div class="progress" style="width:100%">
+											<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{achievement.totalPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': achievement.totalPercentage + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.totalCompletion}}"></div>
+										</div>
+									</span>
+									<span style="float:right; width:55px;">{{achievement.totalPercentage}}%</span>
+								</td>
+							
+
+	    					</tr>
+						</table>
 
 					
-				</div>
-				<div class="panel-body">
-					<span style="float:left; padding-right:10px">
-						<p>Enter your API Key to link your Guild Wars 2 account</p>
-					</span>
-					<div>
-						<button id="helpButton" type="button" class="iconBtn"><i class="glyphicon glyphicon-question-sign redIcon"></i></button>
+
+
 					</div>
-
-					<table class="invisibleTable">
-						<tr>
-							<td class="alignLeft"><input type="text" class="form-control" id="#auth" placeholder="Enter GW2 API Key" ng-model="accessToken"></td>
-							<td class="alignRight fit"><button type="button" class="btn btn-primary" ng-click="authenticate(accessToken)">Authenticate</button></td>
-						</tr>
-					</table>
-					<br/>
-					<div class="alert alert-success" ng-if="basicInfo.name">
-						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    					<p>Welcome <strong>{{basicInfo.name}}</strong>! Here are a few hints on using this tool: </p>
-    					<ol>
-	    					<li>
-	    						Use the Achievements table's title bar to sort achievements by total completion or tier completion.
-	    					</li>
-	    					<li>
-	    						Hover over the achievement names and completion bars to see additional info.
-	    					</li>
-	    					<li>
-	    						As of now, your account information will not be saved and will get reset when you close your browser or reload the page. However, you can save your API Key somewhere convenient, to make it easier to re-enter it.
-	    					</li>
-	    					<li>
-	    						All you can do for now is check achievement completion, but more tools and functionality will be added soon!
-	    					</li>
-    					</ol>
-  					</div>
-
-  					<div class="alert alert-danger" ng-if="!loginSuccess">
-  						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  						Could not log in using that API Key. Please follow the instructions to generate an API Key (using the help button), and try again. Make sure that the generated API key gives access to <strong>account</strong> and <strong>progression</strong>.
-  					</div>
-
-				</div>
+				</div>	
+				<br/><br/>
 			</div>
-
-			<div class="panel panel-default">
-				<div class="panel-heading"><h3>Achievement Completion</h3></div>
-				<div class="panel-body">
-
-					<!-- Not logged in yet -->
-					<div class="alert alert-warning" ng-if="!basicInfo.name">
-  						Please enter an API Key to log in and view your achievement completion info.
-  					</div>
-					<!-- No access to progress -->
-					<div class="alert alert-warning" ng-if="basicInfo.name && achievementInfo.length==0">
-  						Please make sure your API Key has access to <strong>progress</strong> to view your achievement completion info.
-  					</div>
-
-					<table ng-table="tableParams" class="table" show-filter="true" ng-show="achievementInfo.length>0">
-						<tr ng-repeat="achievement in $data">
-							<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
-								<span data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.name}}">{{achievement.name}}</span>
-							</td>
-							<td title="'Total Completion'" sortable="'totalPercentage'">
-								<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
-									<div class="progress" style="width:100%">
-										<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{achievement.totalPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': achievement.totalPercentage + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.totalCompletion}}"></div>
-									</div>
-								</span>
-								<span style="float:right; width:55px;">{{achievement.totalPercentage}}%</span>
-							</td>
-						
-
-    					</tr>
-					</table>
-
-				
-
-
-				</div>
-			</div>	
+			
 		</div>
-	</body>
+
+		<div id="footer">
+			<table>
+				<tr>
+					<td style="padding-right:10px; width:10%; height:auto" class="logo-ncsoft"></td>
+					<td style="padding-right:10px; width:10%; height:auto" class="logo-arenanet"></td>
+					<td><p>© 2015 ArenaNet, Inc. All rights reserved. NCsoft, the interlocking NC logo, ArenaNet, Arena.net, Guild Wars, Guild Wars Factions, Factions, Guild Wars Nightfall, Nightfall, Guild Wars: Eye of the North, Eye of the North, Guild Wars 2, and all associated logos and designs are trademarks or registered trademarks of NCsoft Corporation. All other trademarks are the property of their respective owners.</p></td>
+				</tr>
+			</table>
+
+		</div>
+	</div>	
+
 </html>
