@@ -1,4 +1,4 @@
-.redIcon  {
+.bootRed  {
 	color:#d9534f;
 }
 
@@ -43,11 +43,183 @@ body {
 
 .pageTitle {
     font-family: 'Cinzel', Georgia, Times, serif;
-	color:#d9534f;
+	color:white;
 	text-align:center;
 }
 
+.centerOnPage {
+	float:none;
+	margin-left: auto;
+	margin-right: auto;
+}
 
-/*.ng-table-pager {
-    display: none;
+/*header {
+	color:white;
+	background-color:#d9534f;
+	position:relative;
+	top:-20px;
+	height:40px;
+}
+
+footer {
+  height : 40px;
+  background-color: #d9534f;
+  position : absolute;
+  bottom : 0;
+  width:100%;
 }*/
+
+.redButton{
+	border-color:#d9534f;
+	border-radius: 0;
+	background-color:#d9534f;
+	color:white;
+}
+
+#panel{
+	border-color:grey;
+	background:transparent;
+	border-radius:0;
+}
+
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+#container {
+   min-height:100%;
+   position:relative;
+}
+#header {
+   background:#d9534f;
+   padding:10px;
+}
+#body {
+   padding:10px;
+   padding-bottom:60px;   /* Height of the footer */
+}
+#footer {
+   position:absolute;
+   bottom:0;
+   width:100%;
+   height:auto;
+   /*height:100px;  */ /* Height of the footer */
+   background:#d9534f;
+   color:white;
+   padding-left:20px;
+   padding-right:20px;
+   padding-top:20px;
+   padding-bottom: 20px;
+}
+
+#footer p{
+   font-size:80%;
+   color:white;
+}
+
+.panel-custom {
+	background: rgba(255,255,255, 0.5) !important;
+	/*border-color:grey !important;*/
+
+	box-shadow: 5px 5px 5px 5px #d9534f;
+}
+
+.panel-heading-custom {
+	background:grey !important;
+	border-color:grey !important;
+	color:white !important;
+}
+
+.heading-text {
+	color:white;
+	font-weight: bold;
+}
+
+.navbar-center
+{
+    position: absolute;
+    width: 70%;
+    left: 0;
+    text-align: center;
+    margin:0 auto;
+}
+
+.navbar-plain {
+	position: absolute;
+    width: 15%;
+    left: 0;
+    text-align: center;
+    margin:0 auto;
+}
+
+.navbar-left
+{
+    position: absolute;
+    width: 15%;
+    left: 0;
+    text-align: center;
+    margin:0 auto;
+    background-image: linear-gradient(to bottom,#dbdbdb 0,#e2e2e2 100%);
+
+}
+
+.navbar-right
+{
+    position: absolute;
+    width: 15%;
+    right: 0;
+    text-align: center;
+    margin:0 auto;
+    background-image: linear-gradient(to bottom,#dbdbdb 0,#e2e2e2 100%);
+}
+
+
+.flexbox-container {
+	display: -ms-flex;
+	display: -webkit-flex;
+	display: flex;
+}
+
+.flexbox-container > div {
+	width: 50%;
+}
+
+.flexbox-container > div:first-child {
+	margin-right: 20px;
+}
+
+.logo-ncsoft {
+	background: url('../img/ncsoft.png') left center no-repeat;
+}
+
+.logo-arenanet {
+	background: url('../img/arenanet.png') left center no-repeat;
+}
+
+.logo-gw2 {
+	display:block;
+    background:url(../img/gw2_logo.png);
+    background-repeat:no-repeat;
+    background-size: 100% 100%;
+    width:100%;
+    height:auto;
+    /*bottom:0;
+    right:0;*/
+}
+
+
+
+/*  .navbar-nav {
+    width: 100%;
+    text-align: center;
+  }
+  .navbar-nav > li {
+    float: none;
+    display: inline-block;
+  }
+  .navbar-nav > li.navbar-right {
+    float: right !important;
+    padding-right:10px;
+  }*/

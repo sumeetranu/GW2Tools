@@ -1,13 +1,50 @@
+// var myApp = angular.module('myApp', ['ngTable', 'ngRoute']);
 var myApp = angular.module('myApp', ['ngTable']);
 myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', Controller]);
+/*myApp.config(function($routeProvider) {
+	$routeProvider
+			.when('/', {
+					templateUrl:'controllers/home.html',
+					controller:'homeController'
+			})	
 
+			.when('/achievements', {
+					templateUrl:'controllers/achievements.html',
+					controller:'achievementsController'
+			})
+
+			.when('/about', {
+					templateUrl:'controllers/about.html',
+					controller:'aboutController'
+			});
+});*/
+
+myApp.controller('controller', ['$scope', '$http', '$timeout', 'NgTableParams', Controller]);
+
+/*myApp.controller('achievementsController', ['$scope', AchievementsController]);
+
+myApp.controller('aboutController', ['$scope', AboutController]);
+
+function AchievementsController($scope){
+		$scope.message = 'This is the achievements controller';
+}
+
+function AboutController($scope){
+		$scope.message = 'This is the about controller';
+
+}*/
 
 function Controller($scope, $http, $timeout, NgTableParams) {  
+
+	$scope.message = 'This is the home controller';
+
 
 	var accessToken = ""; 
 
 	$scope.authenticate = function(token) {
 		accessToken = token;
+		$scope.loggedOut = false;
+
 		console.log('Authenticated using:', accessToken);
 		getInfo();
 	}
@@ -17,6 +54,20 @@ function Controller($scope, $http, $timeout, NgTableParams) {
     $scope.tableParams = new NgTableParams({}, { dataset: $scope.achievementInfo});
 
     $scope.loginSuccess=true;
+
+    $scope.loginPage=false;
+
+    $scope.logout = function() {
+    	accessToken = "";
+    	getInfo();
+    	$scope.loggedOut = true;
+    }
+
+    $scope.loggedOut = false;
+
+    $scope.login = function () {
+    	$scope.loginPage=true;
+    }
 
 	var getInfo = function(){
 		$scope.achievementInfo = [];
