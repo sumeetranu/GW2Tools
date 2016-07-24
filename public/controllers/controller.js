@@ -1,6 +1,6 @@
 // var myApp = angular.module('myApp', ['ngTable', 'ngRoute']);
 var myApp = angular.module('myApp', ['ngTable']);
-myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', Controller]);
+myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', '$q', Controller]);
 /*myApp.config(function($routeProvider) {
 	$routeProvider
 			.when('/', {
@@ -19,7 +19,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', Con
 			});
 });*/
 
-myApp.controller('controller', ['$scope', '$http', '$timeout', 'NgTableParams', Controller]);
+myApp.controller('controller', ['$scope', '$http', '$timeout', 'NgTableParams', '$q', Controller]);
 
 /*myApp.controller('achievementsController', ['$scope', AchievementsController]);
 
@@ -34,7 +34,7 @@ function AboutController($scope){
 
 }*/
 
-function Controller($scope, $http, $timeout, NgTableParams) {  
+function Controller($scope, $http, $timeout, NgTableParams, $q) {  
 
 	$scope.message = 'This is the home controller';
 
@@ -44,9 +44,7 @@ function Controller($scope, $http, $timeout, NgTableParams) {
 	$scope.authenticate = function(token) {
 		accessToken = token;
 		$scope.loggedOut = false;
-
-		console.log('Authenticated using:', accessToken);
-		getInfo();
+		loadData();
 	}
 
     $scope.achievementInfo = [];
@@ -57,6 +55,14 @@ function Controller($scope, $http, $timeout, NgTableParams) {
 
     $scope.loginPage=false;
 
+    $scope.getName = getName;
+    $scope.getPercentage = getPercentage;
+
+    $scope.loadingData = false;
+
+    $scope.achievements = {};
+
+
     $scope.logout = function() {
     	accessToken = "";
     	getInfo();
@@ -66,10 +72,27 @@ function Controller($scope, $http, $timeout, NgTableParams) {
     $scope.loggedOut = false;
 
     $scope.login = function () {
+    	console.log('Logging in');
     	$scope.loginPage=true;
     }
 
+    var loadData = function() {
+    	console.log('Load data');
+    	$scope.loadingData = true;
+    	if(Object.keys($scope.achievements)==0){
+    		console.log('No achievements found');
+			$scope.loadingData = true;
+			getNames();
+		} else{
+			console.log('Achievements found');
+			$scope.loadingData = false;
+			getInfo();
+		}
+
+    }
+
 	var getInfo = function(){
+		console.log("Getting info");
 		$scope.achievementInfo = [];
     	$scope.basicInfo = {};
     	$scope.tableParams = new NgTableParams({}, { dataset: $scope.achievementInfo});
@@ -77,7 +100,7 @@ function Controller($scope, $http, $timeout, NgTableParams) {
 		// Basic account info
 		var accountUrl = 'https://api.guildwars2.com//v2/account?access_token=' + accessToken;
 		$http.get(accountUrl).success(function(response) {
-			console.log('basic response was:', response);
+			console.log('Got basic info');
 			$scope.basicInfo = response;
 			$scope.loginSuccess=true;
 		}).error(function(response) {
@@ -89,16 +112,13 @@ function Controller($scope, $http, $timeout, NgTableParams) {
 		// Account info and completion
 		var achievementsUrl = 'https://api.guildwars2.com//v2/account/achievements?access_token=' + accessToken;
 		$http.get(achievementsUrl).success(function(response) {
-			console.log('I got the data I requested', response);
+			console.log('Got achievement info');
 			$scope.loginSuccess=true;
 			$scope.achievementInfo = response.sort(function(a,b){
-				console.log('Sorting');
 				var valA = (a.current*100)/a.max;
 				var valB = (b.current*100)/b.max;
 				return valB-valA;
 			});	
-
-			console.log('Scope.achievementInfo is:', $scope.achievementInfo);
 
 			$scope.tableParams = new NgTableParams({}, { dataset: transform($scope.achievementInfo)});
 
@@ -113,7 +133,6 @@ function Controller($scope, $http, $timeout, NgTableParams) {
     function transform(data){
     	ret = [];
     	for(var i=0; i<data.length; i++){
-    		console.log(data[i].done);
     		if(data[i].done==false){
     			var curData = data[i];
     			var curRet = {
@@ -126,22 +145,62 @@ function Controller($scope, $http, $timeout, NgTableParams) {
     			ret.push(curRet);
     		}
     	}
-    	console.log('RET:', ret);
     	return ret;
     }
-
-    $scope.getName = getName;
-    $scope.getPercentage = getPercentage;
 
 	function getPercentage(achievement) {
 		var percent=(achievement.current*1.0)/achievement.max*100;
 		var rounded = percent.toFixed(2)
-		//console.log('percent:', percent);
 		return rounded;
 	}
 
+	$scope.loadingPercentage = 0;
+
+	function getNames() {
+		console.log('Getting names');
+		var numAchievements = 0;
+		var arr = [];
+		// Get total number
+		var achievementUrl = 'https://api.guildwars2.com/v2/achievements';
+		var baseUrl = achievementUrl + '/'
+		$http.get(achievementUrl).then(function(response) {
+			numAchievements = response.data.length;
+
+			for(var i=0; i<numAchievements; i++){
+				var newUrl = baseUrl + response.data[i];
+				arr.push($http.get(newUrl));
+			}
+
+			$q.all(arr).then(function(ret) {
+				for(var j=0; j<ret.length; j++){
+					var data = ret[j].data;
+					$scope.achievements[data.id] = data;
+					$scope.loadingPercentage = ((j*1.0)/ret.length)*100;
+					console.log('set Loading percentage:', $scope.loadingPercentage);
+					if(j==ret.length-1){
+						console.log('Calling getInfo');
+						getInfo();
+						$scope.basicInfo = {name:'Loading'};
+						$scope.loadingData=false;
+					}
+				}
+			});
+		});
+
+		// Loop each and create promise
+
+		// q.all and then stop loading bar (this func is before getInfo)
+	}
+
+
 	function getName(id) {
-		return $scope.names[id];
+		return $scope.achievements[id].name;
+		//return $scope.names[id];
+		/*var achievementUrl = 'https://api.guildwars2.com//v2/achievements?id=' + id;
+		$http.get(achievementUrl).then(function(response) {
+			return response.data.name;
+		});*/
+
 	}
 	
 	// Id to name mapping hardcoded for now
