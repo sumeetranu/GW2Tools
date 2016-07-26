@@ -34,7 +34,8 @@
 
 
 h1, h2, h3, h4, h5, h6, p, div {
-    font-family: 'Cinzel', Georgia, Times, serif;
+    font-family: 'Cormorant Garamond', serif;
+    font-size:18px;
 }
 
 body { 
@@ -224,6 +225,25 @@ body {
     to { -webkit-transform: rotate(360deg); }
 }
 
+div.tooltip-inner {
+    text-align: left;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 4px;
+    /*margin-bottom: 6px;*/
+    background-color: #505050;
+}
+
+
+.description-tooltip + .tooltip > .tooltip-inner {
+    text-align: left;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    /*margin-bottom: 6px;*/
+    background-color: #505050;
+    max-width:75%;
+}
 
 /*  .navbar-nav {
     width: 100%;

@@ -17,9 +17,7 @@
 
 
 		<!-- Google Fonts -->
-		<link href="https://fonts.googleapis.com/css?family=Cinzel|New+Rocker" rel="stylesheet"> 
-
-
+		<link href="https://fonts.googleapis.com/css?family=Cormorant+Unicase|Cinzel|Open+Sans|Eczar|Cormorant+Garamond" rel="stylesheet"> 
 		<script>
 			$(function () {
 				$('[data-toggle="popover"]').popover()
@@ -140,7 +138,7 @@
 						<table ng-table="tableParams" class="table" show-filter="true" ng-show="achievementInfo.length>0">
 							<tr ng-repeat="achievement in $data">
 								<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
-									<span data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.name}}">{{achievement.name}}</span>
+									<span class="description-tooltip" data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.description}}">{{achievement.name}}</span>
 								</td>
 								<td title="'Total Completion'" sortable="'totalPercentage'">
 									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
