@@ -1,5 +1,6 @@
 // var myApp = angular.module('myApp', ['ngTable', 'ngRoute']);
 var myApp = angular.module('myApp', ['ngTable']);
+
 myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', '$q', Controller]);
 /*myApp.config(function($routeProvider) {
 	$routeProvider
@@ -35,9 +36,7 @@ function AboutController($scope){
 }*/
 
 function Controller($scope, $http, $timeout, NgTableParams, $q) {  
-
 	$scope.message = 'This is the home controller';
-
 
 	var accessToken = ""; 
 
@@ -60,8 +59,9 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
     $scope.loadingData = false;
 
-    $scope.achievements = {};
+    //$scope.achievements = {};
 
+    $scope.getDescription = getDescription;
 
     $scope.logout = function() {
     	accessToken = "";
@@ -79,12 +79,13 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
     var loadData = function() {
     	console.log('Load data');
     	$scope.loadingData = true;
-    	if(Object.keys($scope.achievements)==0){
+    	
+    	if($scope.achievements == undefined){
     		console.log('No achievements found');
 			$scope.loadingData = true;
 			getNames();
 		} else{
-			console.log('Achievements found');
+			console.log('Achievements found:', $scope.achievements);
 			$scope.loadingData = false;
 			getInfo();
 		}
@@ -99,7 +100,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
 		// Basic account info
 		var accountUrl = 'https://api.guildwars2.com//v2/account?access_token=' + accessToken;
-		$http.get(accountUrl).success(function(response) {
+		$http.get(accountUrl, {cache:true}).success(function(response) {
 			console.log('Got basic info');
 			$scope.basicInfo = response;
 			$scope.loginSuccess=true;
@@ -111,7 +112,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
 		// Account info and completion
 		var achievementsUrl = 'https://api.guildwars2.com//v2/account/achievements?access_token=' + accessToken;
-		$http.get(achievementsUrl).success(function(response) {
+		$http.get(achievementsUrl, {cache:true}).success(function(response) {
 			console.log('Got achievement info');
 			$scope.loginSuccess=true;
 			$scope.achievementInfo = response.sort(function(a,b){
@@ -126,9 +127,19 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 			console.log('Failed login due to:', response);
 			$scope.loginSuccess=false;
 		});	
+
+		console.log($scope.achievements);
 	}
 	
-   
+   	function getDescription(achievement){
+   		var description = $scope.achievements[achievement.id].description;
+   		var requirement = $scope.achievements[achievement.id].requirement;
+
+   		var ret = description.replace('<c=@flavor>','') + ' ' + requirement.replace('<c=@flavor>','');
+   		console.log('calling getDescription:', ret);
+
+   		return ret;
+   	}
 
     function transform(data){
     	ret = [];
@@ -140,7 +151,8 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 	    			totalCompletion: curData.current + ' / ' + curData.max,
 	    			totalPercentage: getPercentage(curData),
 	    			tierCompletion: curData.current/curData.max,
-	    			tierPercentage: getPercentage(curData)
+	    			tierPercentage: getPercentage(curData),
+	    			description: getDescription($scope.achievements[curData.id])
     			};
     			ret.push(curRet);
     		}
@@ -158,25 +170,24 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
 	function getNames() {
 		console.log('Getting names');
+		$scope.achievements = [];
 		var numAchievements = 0;
 		var arr = [];
 		// Get total number
 		var achievementUrl = 'https://api.guildwars2.com/v2/achievements';
 		var baseUrl = achievementUrl + '/'
-		$http.get(achievementUrl).then(function(response) {
+		$http.get(achievementUrl, {cache:true}).then(function(response) {
 			numAchievements = response.data.length;
 
 			for(var i=0; i<numAchievements; i++){
 				var newUrl = baseUrl + response.data[i];
-				arr.push($http.get(newUrl));
+				arr.push($http.get(newUrl, {cache:true}));
 			}
 
 			$q.all(arr).then(function(ret) {
 				for(var j=0; j<ret.length; j++){
 					var data = ret[j].data;
 					$scope.achievements[data.id] = data;
-					$scope.loadingPercentage = ((j*1.0)/ret.length)*100;
-					console.log('set Loading percentage:', $scope.loadingPercentage);
 					if(j==ret.length-1){
 						console.log('Calling getInfo');
 						getInfo();
