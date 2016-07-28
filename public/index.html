@@ -138,7 +138,7 @@
 						<table ng-table="tableParams" class="table" show-filter="true" ng-show="achievementInfo.length>0">
 							<tr ng-repeat="achievement in $data">
 								<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
-									<span class="description-tooltip" data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.description}}">{{achievement.name}}</span>
+									<span style="height:100%" class="description-tooltip" data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.description}}">{{achievement.name}}</span>
 								</td>
 								<td title="'Total Completion'" sortable="'totalPercentage'">
 									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
