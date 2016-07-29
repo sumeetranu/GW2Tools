@@ -132,12 +132,10 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 	}
 	
    	function getDescription(achievement){
+
    		var description = $scope.achievements[achievement.id].description;
    		var requirement = $scope.achievements[achievement.id].requirement;
-
    		var ret = description.replace('<c=@flavor>','') + ' ' + requirement.replace('<c=@flavor>','');
-   		console.log('calling getDescription:', ret);
-
    		return ret;
    	}
 
@@ -191,6 +189,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 					if(j==ret.length-1){
 						console.log('Calling getInfo');
 						getInfo();
+						console.log('Data:', $scope.achievements);
 						$scope.basicInfo = {name:'Loading'};
 						$scope.loadingData=false;
 					}
