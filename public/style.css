@@ -54,6 +54,7 @@ body {
 	margin-right: auto;
 }
 
+
 /*header {
 	color:white;
 	background-color:#d9534f;
@@ -116,7 +117,6 @@ body {
 }
 
 #footer p{
-   font-size:80%;
    color:white;
 }
 
@@ -192,11 +192,13 @@ body {
 }
 
 .logo-ncsoft {
-	background: url('../img/ncsoft.png') left center no-repeat;
+	background: url('../img/ncsoft.png') center center no-repeat;
+	background-size:contain;
 }
 
 .logo-arenanet {
-	background: url('../img/arenanet.png') left center no-repeat;
+	background: url('../img/arenanet.png') center center no-repeat;
+	background-size:contain;
 }
 
 .logo-gw2 {
