@@ -141,12 +141,23 @@
 									<span style="height:100%" class="description-tooltip" data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.description}}">{{achievement.name}}</span>
 								</td>
 								<td title="'Total Completion'" sortable="'totalPercentage'">
-									<span style="float:left; width:calc(100% - 60px); padding-right:5px; cursor: pointer">
+									<span style="float:left; width:calc((100% - 60px)); padding-right:5px; cursor: pointer">
 										<div class="progress" style="width:100%">
 											<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{achievement.totalPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': achievement.totalPercentage + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.totalCompletion}}"></div>
 										</div>
 									</span>
 									<span style="float:right; width:55px;">{{achievement.totalPercentage}}%</span>
+								</td>
+								<td title="'Tier Completion'" sortable="'tierPercentage'">
+									<span style="float:left; width:calc((100% - 60px)); padding-right:5px; cursor: pointer">
+										<div class="progress" style="width:100%">
+											<div class="progress-bar progress-bar-striped" role="progress-bar" aria-valuenow="{{achievement.tierPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': achievement.tierPercentage + '%'}" data-toggle="tooltip" data-placement="bottom" title="{{achievement.tierCompletion}}"></div>
+										</div>
+									</span>
+									<span style="float:right; width:55px;">{{achievement.tierPercentage}}%</span>
+								</td>
+								<td title="'Tier Points'" sortable="'tierPoints'">
+									<center>{{achievement.tierPoints}}</center>
 								</td>
 							
 

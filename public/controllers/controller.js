@@ -72,20 +72,16 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
     $scope.loggedOut = false;
 
     $scope.login = function () {
-    	console.log('Logging in');
     	$scope.loginPage=true;
     }
 
     var loadData = function() {
-    	console.log('Load data');
     	$scope.loadingData = true;
     	
     	if($scope.achievements == undefined){
-    		console.log('No achievements found');
 			$scope.loadingData = true;
 			getNames();
 		} else{
-			console.log('Achievements found:', $scope.achievements);
 			$scope.loadingData = false;
 			getInfo();
 		}
@@ -93,7 +89,6 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
     }
 
 	var getInfo = function(){
-		console.log("Getting info");
 		$scope.achievementInfo = [];
     	$scope.basicInfo = {};
     	$scope.tableParams = new NgTableParams({}, { dataset: $scope.achievementInfo});
@@ -101,11 +96,9 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 		// Basic account info
 		var accountUrl = 'https://api.guildwars2.com//v2/account?access_token=' + accessToken;
 		$http.get(accountUrl, {cache:true}).success(function(response) {
-			console.log('Got basic info');
 			$scope.basicInfo = response;
 			$scope.loginSuccess=true;
 		}).error(function(response) {
-			console.log('Failed login due to:', response);
 			$scope.loginSuccess=false;
 			$scope.basicInfo={};
 		});
@@ -113,7 +106,6 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 		// Account info and completion
 		var achievementsUrl = 'https://api.guildwars2.com//v2/account/achievements?access_token=' + accessToken;
 		$http.get(achievementsUrl, {cache:true}).success(function(response) {
-			console.log('Got achievement info');
 			$scope.loginSuccess=true;
 			$scope.achievementInfo = response.sort(function(a,b){
 				var valA = (a.current*100)/a.max;
@@ -124,15 +116,11 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 			$scope.tableParams = new NgTableParams({}, { dataset: transform($scope.achievementInfo)});
 
 		}).error(function(response) {
-			console.log('Failed login due to:', response);
 			$scope.loginSuccess=false;
 		});	
-
-		console.log($scope.achievements);
 	}
 	
    	function getDescription(achievement){
-
    		var description = $scope.achievements[achievement.id].description;
    		var requirement = $scope.achievements[achievement.id].requirement;
    		var ret = description.replace('<c=@flavor>','') + ' ' + requirement.replace('<c=@flavor>','');
@@ -148,14 +136,52 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 	    			name: $scope.getName(curData.id),
 	    			totalCompletion: curData.current + ' / ' + curData.max,
 	    			totalPercentage: getPercentage(curData),
-	    			tierCompletion: curData.current/curData.max,
-	    			tierPercentage: getPercentage(curData),
+	    			tierCompletion: getTierCompletion(curData),
+	    			tierPercentage: getTierPercentage(curData),
+	    			tierPoints: getTierPoints(curData),
 	    			description: getDescription($scope.achievements[curData.id])
     			};
     			ret.push(curRet);
     		}
     	}
     	return ret;
+    }
+
+    function getClosestTier(curData){
+    	// achievement -> current, max (need to use current)
+    	var current = curData.current;
+    	var achievement = $scope.achievements[curData.id];
+    	var num = 0;
+    	var count = 0;
+    	var points = 0;
+    	while(num<=current){
+    		num = achievement.tiers[count].count;
+    		points = achievement.tiers[count].points;
+    		count = count+1;
+    	}
+
+    	return {number:num, points:points};
+    }
+
+    function getTierPoints(curData){
+    	var closestTier = getClosestTier(curData);
+    	return closestTier.points;
+    }
+
+    function getTierCompletion(curData){
+    	var current = curData.current;
+    	var closestTier = getClosestTier(curData);
+
+    	return current + ' / ' + closestTier.number;
+    }
+
+    function getTierPercentage(achievement){
+    	var current = achievement.current;
+    	var closestTier = getClosestTier(achievement);
+		var percent=(achievement.current*1.0)/closestTier.number*100;
+		var rounded = percent.toFixed(2)
+
+    	return rounded;
     }
 
 	function getPercentage(achievement) {
@@ -167,7 +193,6 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 	$scope.loadingPercentage = 0;
 
 	function getNames() {
-		console.log('Getting names');
 		$scope.achievements = [];
 		var numAchievements = 0;
 		var arr = [];
@@ -187,9 +212,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 					var data = ret[j].data;
 					$scope.achievements[data.id] = data;
 					if(j==ret.length-1){
-						console.log('Calling getInfo');
 						getInfo();
-						console.log('Data:', $scope.achievements);
 						$scope.basicInfo = {name:'Loading'};
 						$scope.loadingData=false;
 					}
