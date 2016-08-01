@@ -52,8 +52,6 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
     $scope.loginSuccess=true;
 
-    $scope.loginPage=false;
-
     $scope.getName = getName;
     $scope.getPercentage = getPercentage;
 
@@ -65,15 +63,13 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
     $scope.logout = function() {
     	accessToken = "";
-    	getInfo();
+    	$scope.achievementInfo = [];
+    	$scope.basicInfo = {};
+    	$scope.tableParams = new NgTableParams({}, { dataset: $scope.achievementInfo});
     	$scope.loggedOut = true;
     }
 
     $scope.loggedOut = false;
-
-    $scope.login = function () {
-    	$scope.loginPage=true;
-    }
 
     var loadData = function() {
     	$scope.loadingData = true;
@@ -100,6 +96,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 			$scope.loginSuccess=true;
 		}).error(function(response) {
 			$scope.loginSuccess=false;
+			console.log('set loginSuccess to false!');
 			$scope.basicInfo={};
 		});
 
@@ -116,6 +113,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 			$scope.tableParams = new NgTableParams({}, { dataset: transform($scope.achievementInfo)});
 
 		}).error(function(response) {
+			console.log('set loginSuccess to false!');
 			$scope.loginSuccess=false;
 		});	
 	}
