@@ -47,7 +47,7 @@
 	<!-- public void do_stuff_plz() {var x = 69;} -->	
 	<div id="container" ng-controller="AppCtrl">
 		<div id="header">
-			<h1 class="pageTitle">Guild Wars 2 Achievs</h1>
+			<h1 class="pageTitle">Guild Wars 2 Tools</h1>
 		</div>
 
 		<!-- Navbar -->
@@ -76,9 +76,9 @@
 				<!-- Landing/welcome page -->
 				<div ng-if="!basicInfo.name && !loadingData" class="flexbox-container">
 					<div>
-						<h1 class="bootRed">Welcome to GW2Achievs!</h1>
+						<h1 class="bootRed">Welcome to GW2Tools!</h1>
 						<p>Do you wish you had an easier way to search through all of your Guild Wars 2 achievements? This tool allows you to do that, and more! </P>
-						<p>Once you Login, you can see a list of all of your achievements, sorted by completion. You can search for achievements by name, and sort by total and tier completion.</p>
+						<p>Once you Login, you can see a list of all of your achievements, with additional info for each. You can search for achievements by name, and sort by total and tier completion and even see achievement points you will earn for completing the tiers.</p>
 						<p>More functionality will be added soon!</p>
 						<span style="padding-right:10px; width:10%; height:auto" class="logo-gw2"></span>
 						<img class="logo-gw2" src="../img/gw2_logo.png">
@@ -135,6 +135,9 @@
 
 						<table ng-table="tableParams" class="table" show-filter="true" ng-show="achievementInfo.length>0">
 							<tr ng-repeat="achievement in $data">
+								<td title="'Category'" filter="{ categoryName: 'text'}" sortable="'categoryName'">
+									<span  style="height:100%" class="description-tooltip" data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.categoryDescription}}">{{achievement.categoryName}}</span>
+								</td>
 								<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
 									<span style="height:100%" class="description-tooltip" data-toggle="tooltip" data-placement="right" ng-attr-title="{{achievement.description}}">{{achievement.name}}</span>
 								</td>
@@ -157,17 +160,10 @@
 								<td title="'Tier Points'" sortable="'tierPoints'">
 									<center>{{achievement.tierPoints}}</center>
 								</td>
-							
-
 	    					</tr>
 						</table>
-
-					
-
-
 					</div>
 				</div>	
-				<br/><br/>
 			</div>
 			
 		</div>
