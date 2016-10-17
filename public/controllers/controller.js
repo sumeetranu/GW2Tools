@@ -2,38 +2,8 @@
 var myApp = angular.module('myApp', ['ngTable']);
 
 myApp.controller('AppCtrl', ['$scope', '$http', '$timeout', 'NgTableParams', '$q', Controller]);
-/*myApp.config(function($routeProvider) {
-	$routeProvider
-			.when('/', {
-					templateUrl:'controllers/home.html',
-					controller:'homeController'
-			})	
-
-			.when('/achievements', {
-					templateUrl:'controllers/achievements.html',
-					controller:'achievementsController'
-			})
-
-			.when('/about', {
-					templateUrl:'controllers/about.html',
-					controller:'aboutController'
-			});
-});*/
 
 myApp.controller('controller', ['$scope', '$http', '$timeout', 'NgTableParams', '$q', Controller]);
-
-/*myApp.controller('achievementsController', ['$scope', AchievementsController]);
-
-myApp.controller('aboutController', ['$scope', AboutController]);
-
-function AchievementsController($scope){
-		$scope.message = 'This is the achievements controller';
-}
-
-function AboutController($scope){
-		$scope.message = 'This is the about controller';
-
-}*/
 
 function Controller($scope, $http, $timeout, NgTableParams, $q) {  
 	$scope.message = 'This is the home controller';
@@ -84,41 +54,7 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 
     }
 
-    var testerKey = "test-this-website";
-
-    var testerAchievementInfo = [
-    	{
-    		current:47,
-    		done:false,
-    		id:3069,
-    		max:50
-    	},
-    	{
-    		current:12,
-    		done:false,
-    		id:863,
-    		max:15
-    	},
-    	{
-    		current:629,
-    		done:false,
-    		id:3,
-    		max:1000
-    	},
-    	{
-    		current:2,
-    		done:false,
-    		id:2733,
-    		max:5
-    	},
-    	{
-    		current:4,
-    		done:false,
-    		id:1718,
-    		max:37
-    	}
-    	
-    ];
+    var testerKey = "test";
 
 	var getInfo = function(){
 		console.log('Getting info...');
@@ -130,6 +66,8 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
     		$scope.achievementInfo = testerAchievementInfo;
     		$scope.tableParams = new NgTableParams({}, { dataset: transform($scope.achievementInfo)});
     		console.log('achievementInfo:', $scope.achievementInfo);
+    		$scope.loginSuccess = true;
+    		$scope.basicInfo = {name:'Loading'};
     	} else{
     		// Basic account info
 			var accountUrl = 'https://api.guildwars2.com//v2/account?access_token=' + accessToken;
@@ -254,6 +192,17 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 		var categoryUrl = 'https://api.guildwars2.com/v2/achievements/categories';
 		var categoryBaseUrl = categoryUrl + '/';
 		console.log('category url:', categoryUrl);
+
+		// If test, return hardcoded data
+		if(accessToken==testerKey){
+			$scope.achievements = testAchievements;
+			console.log('Scope.achievements is:', $scope.achievements);
+
+			$scope.loadingData=false;
+			getInfo();
+			return;
+		}
+
 		$http.get(categoryUrl, {cache:true}).then(function(response) {
 			numCategories = response.data.length;
 			//console.log('categories initial response:', response, ' with data:', response.data, ' with length:', numCategories);
@@ -321,4 +270,115 @@ function Controller($scope, $http, $timeout, NgTableParams, $q) {
 	function getName(id) {
 		return $scope.achievements[id].name;
 	}
+
+	// Hard coded data for test keys
+	var testerAchievementInfo = [
+    	{
+    		current:47,
+    		done:false,
+    		id:3069,
+    		max:50
+    	},
+    	{
+    		current:12,
+    		done:false,
+    		id:863,
+    		max:15
+    	},
+    	{
+    		current:629,
+    		done:false,
+    		id:3,
+    		max:1000
+    	},
+    	{
+    		current:2,
+    		done:false,
+    		id:2733,
+    		max:5
+    	},
+    	{
+    		current:4,
+    		done:false,
+    		id:1718,
+    		max:37
+    	}
+    	
+    ];
+
+    var testAchievements = {
+    	3069:{
+    		categoryDescription:"",
+    		categoryName:"Revenge of the Capricorn",
+    		description:"Quick, while they're distracted!",
+    		id: 3069,
+    		name:"Opportunist",
+    		requirement:"Neutralize  enemy capture point during rated Revenge of the Capricorn matches.",
+    		tiers:[
+    			{count:1, points:1},
+    			{count:5, points:1},
+    			{count:10, points:1},
+    			{count:15, points:1},
+    			{count:25, points:1},
+    			{count:50, points:3}
+    		],
+    		type:"Default"	
+    	},
+    	863:{
+    		categoryDescription:"",
+    		categoryName:"Super Adventure Box: World 1",
+    		description:"...And complete a senior capstone project on bauble theory.",
+    		id: 863,
+    		name:"Minor in Achievement",
+    		requirement:"Complete 15 achievements in World 1.",
+    		tiers:[
+    			{count:15, points:15}
+    		],
+    		type:"Default"	
+    	},
+    	3:{
+    		categoryDescription:"",
+    		categoryName:"Slayer",
+    		description:"Scrape these scavengers off the surface of Tyria.",
+    		id: 3,
+    		name:"Skritt Slayer",
+    		requirement:"Kill  skritt.",
+    		tiers:[
+    			{count:10, points:1},
+    			{count:100, points:5},
+    			{count:500, points:5},
+    			{count:1000, points:5}
+    		],
+    		type:"Default"	
+    	},
+    	2733:{
+    		categoryDescription:"",
+    		categoryName:"Year of the Ascension Part I",
+    		description:"Completing this achievement advances the League Professional—Recruit achievement.",
+    		id: 2733,
+    		name:"League Necromancer—Recruit",
+    		requirement:"Win 5 ranked matches as a necromancer.",
+    		tiers:[
+    			{count:1, points:1},
+    			{count:3, points:1},
+    			{count:5, points:1}
+    		],
+    		type:""	
+    	},
+    	1718:{
+    		categoryDescription:"",
+    		categoryName:"Basic Collections",
+    		description:"",
+    		id: 1718,
+    		name:"Honor of the Waves Collector",
+    		requirement:"Use Symbols of Koda from Honor of the Waves to unlock all  weapon and armor skins in your wardrobe.",
+    		tiers:[
+    			{count:1, points:1},
+    			{count:18, points:1},
+    			{count:37, points:1}
+    		],
+    		type:""	
+    	}
+    };
+
 }
